@@ -6,57 +6,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-char	**get_env_path_line(char **env)
-{
-	int		i;
-	char	**res;
-
-
-	i = 0;
-	while (env[i])
-	{
-		if (ft_strstr(env[i], "PATH=") == env[i])
-		{
-			res = ft_split(env[i] + ft_strlen("PATH="), ':');
-			break ;
-		}
-		++i;
-	}
-	i = 0;
-	while (res && res[i])
-	{
-		res[i] = join_free(res[i], "/");
-		if (!res[i])
-		{
-			free_split(res);
-			break ;
-		}
-		++i;
-	}
-	return (res);
-}
-
-int	exec(char **command, char **env)
-{
-	int		i;
-	char	**paths;
-
-	i = 0;
-	paths = get_env_path_line(env);
-	while (paths && paths[i])
-	{
-		paths[i] = join_free(paths[i], command[0]);
-		if (paths[i] && execve(paths[i], command, env) != -1)
-			break ;
-		++i;
-	}
-	free_split(paths);
-	return (0);
-}
-
-// Le parent lit du 1er fichier et écrit dans le pipe
-void	parent(char **av, int pipefd[2], char **env)
+#include <stdlib.h>
+// Le child lit du 1er fichier et écrit dans le pipe
+static void	child(char **av, int pipefd[2], char **env)
 {
 	char	**command;
 	int		fd;
@@ -76,13 +28,13 @@ void	parent(char **av, int pipefd[2], char **env)
 	free_split(command);
 }
 
-void	child(char **av, int pipefd[2], char **env)
+static void	parent(char **av, int pipefd[2], char **env)
 {
 	(void)env;
 	int		fd;
 	char	**command;
 
-	fd = open(av[4], O_WRONLY | O_CREAT);
+	fd = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 00664);
 	command = ft_split(av[3], ' ');
 	close(pipefd[1]);
 	if (fd != -1 && command)
@@ -97,18 +49,31 @@ void	child(char **av, int pipefd[2], char **env)
 	free_split(command);
 }
 
+int	print_err_and_exit(char *s)
+{
+	write(2, s, ft_strlen(s));
+	write(2, "\n", 1);
+	free(s);
+	return (-1);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	int	pipefd[2];
 	int	pid;
 
-	if (pipe(pipefd))
-		return (-1);
 	if (ac != 5)
 	{
 		write(2, USAGE_MSG, ft_strlen(USAGE_MSG));
 		return (0);
 	}
+	if (pipe(pipefd))
+		return (print_err_and_exit(PIPE_FAILED));
+	if (test_bin_access(av[2], env))
+		return (print_err_and_exit(ft_strjoin(EXEC_ERROR, av[2])));
+	if (test_bin_access(av[3], env))
+		return (print_err_and_exit(ft_strjoin(EXEC_ERROR, av[3])));
+
 	pid = fork();
 	if (pid == -1)
 	{
@@ -119,5 +84,4 @@ int	main(int ac, char **av, char **env)
 		child(av, pipefd, env);
 	else
 		parent(av, pipefd, env);
-	return (0);
 }

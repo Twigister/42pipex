@@ -19,6 +19,8 @@ SRC_COMMON 		=	ft_split		\
 					ft_strlen		\
 					ft_strnstr		\
 					ft_strjoin		\
+					exec			\
+					parse_env		\
 
 SRC_NORMAL		=	main			\
 
