@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_normal.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: arlarzil <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/08 14:22:43 by arlarzil          #+#    #+#             */
+/*   Updated: 2024/01/08 14:22:43 by arlarzil         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../pipex.h"
 
 #include <unistd.h>
@@ -7,7 +19,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdlib.h>
-// Le child lit du 1er fichier et écrit dans le pipe
+
 static void	child(char **av, int pipefd[2], char **env)
 {
 	char	**command;
@@ -30,7 +42,6 @@ static void	child(char **av, int pipefd[2], char **env)
 
 static void	parent(char **av, int pipefd[2], char **env)
 {
-	(void)env;
 	int		fd;
 	char	**command;
 
@@ -73,7 +84,6 @@ int	main(int ac, char **av, char **env)
 		return (print_err_and_exit(ft_strjoin(EXEC_ERROR, av[2])));
 	if (test_bin_access(av[3], env))
 		return (print_err_and_exit(ft_strjoin(EXEC_ERROR, av[3])));
-
 	pid = fork();
 	if (pid == -1)
 	{
