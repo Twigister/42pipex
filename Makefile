@@ -14,13 +14,16 @@ SRC_COMMON_DIR 		=	src/
 SRC_NORMAL_DIR	=	src/normal/
 SRC_BONUS_DIR	=	src/bonus/
 
-SRC_COMMON 		=	ft_split		\
-					ft_strdup		\
-					ft_strlen		\
-					ft_strnstr		\
-					ft_strjoin		\
-					exec			\
-					parse_env		\
+SRC_COMMON 		=	ft_split			\
+					ft_strdup			\
+					ft_strlen			\
+					ft_strnstr			\
+					ft_strjoin			\
+					exec				\
+					parse_env			\
+					parse_command		\
+					count_chars			\
+					quote_type			\
 
 SRC_NORMAL		=	main			\
 

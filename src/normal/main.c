@@ -26,7 +26,7 @@ static void	child(char **av, int pipefd[2], char **env)
 	int		fd;
 
 	fd = open(av[1], O_RDONLY);
-	command = ft_split(av[2], ' ');
+	command = parse_command(av[2]);
 	close(pipefd[0]);
 	if (fd != -1 && command)
 	{
@@ -46,7 +46,7 @@ static void	parent(char **av, int pipefd[2], char **env)
 	char	**command;
 
 	fd = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 00664);
-	command = ft_split(av[3], ' ');
+	command = parse_command(av[3]);
 	close(pipefd[1]);
 	if (fd != -1 && command)
 	{

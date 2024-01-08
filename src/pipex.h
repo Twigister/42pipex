@@ -30,5 +30,8 @@ char	*join_free(char *s1, char *s2);
 int		exec(char **command, char **env);
 char	**get_env_path_line(char **env);
 int		test_bin_access(char *command, char **env);
+char	get_first_quote_type(char *s);
+int		count_chars(char *s, char c);
+char	**parse_command(char *s);
 
 #endif
