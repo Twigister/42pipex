@@ -35,8 +35,9 @@ char	**get_env_path_line(char **env)
 	int		i;
 	char	**res;
 
+	res = NULL;
 	i = 0;
-	while (env[i])
+	while (env && env[i])
 	{
 		if (ft_strstr(env[i], "PATH=") == env[i])
 		{
