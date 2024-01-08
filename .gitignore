@@ -1,2 +1,5 @@
 *.o
 pipex
+*.out
+*.a
+*.swp
