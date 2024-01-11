@@ -24,6 +24,7 @@ SRC_COMMON 		=	ft_split			\
 					parse_command		\
 					count_chars			\
 					quote_type			\
+					ft_isspace			\
 
 SRC_NORMAL		=	main			\
 

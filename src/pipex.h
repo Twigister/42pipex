@@ -33,5 +33,6 @@ int		test_bin_access(char *command, char **env);
 char	get_first_quote_type(char *s);
 int		count_chars(char *s, char c);
 char	**parse_command(char *s);
+int		ft_isspace(char c);
 
 #endif

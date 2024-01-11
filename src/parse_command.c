@@ -5,120 +5,116 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: arlarzil <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/08 15:43:41 by arlarzil          #+#    #+#             */
-/*   Updated: 2024/01/08 15:43:42 by arlarzil         ###   ########.fr       */
+/*   Created: 2024/01/11 15:19:43 by arlarzil          #+#    #+#             */
+/*   Updated: 2024/01/11 15:19:43 by arlarzil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "pipex.h"
 
-static char	**free_shit(char **tab, char **tab_end)
+static int	get_quote_len(char *command, char quote)
 {
 	int	i;
 
 	i = 0;
-	while (tab_end[i])
+	while (command[i] != quote)
 	{
-		free(tab_end[i]);
+		if (!command[i])
+			return (-1);
 		++i;
 	}
-	free_split(tab);
-	return (NULL);
+	return (i - 1);
 }
 
-static char	**concat_chunks(char **tab)
+static int	count_words(char *command)
 {
-	int		pos_write;
-	int		pos_read;
-	char	quote_type;
-	char	*tmp;
+	int		res;
+	int		len;
 
-	pos_write = 0;
-	pos_read = 0;
-	while (tab[pos_read])
+	res = 0;
+	while (*command)
 	{
-		quote_type = get_first_quote_type(tab[pos_read]);
-		while (quote_type && (tab[pos_read], quote_type) % 2 == 0)
+		while (ft_isspace(*command))
+			++command;
+		if (*command)
+			res += 1;
+		while (*command && !ft_isspace(*command))
 		{
-			tmp = tab[pos_write];
-			tab[pos_write] = ft_strjoin(tab[pos_write], tab[pos_read]);
-			if (!tab)
-				return (free_shit(tab, tab + pos_read));
-			free(tmp);
-			free(tab[pos_read]);
-			tab[pos_read] = NULL;
-			++pos_read;
+			if (*command == '"' || *command == '\'')
+			{
+				len = get_quote_len(command + 1, *command);
+				if (len != -1)
+					command += len + 3;
+				else
+					return (-1);			
+			}
+			else
+				while (*command && !ft_isspace(*command) && !(*command == '"' || *command == '\''))
+					++command;
 		}
-		++pos_write;
-		++pos_read;
 	}
-	return (tab);
+	return (res);
 }
 
-static void	remove_word_quotes(char *w)
-{
-	int		i;
-	int		step;
-	char	last_quote;
-
-	last_quote = 0;
-	step = 0;
-	i = 0;
-	while (w[i])
-	{
-		if (last_quote == 0 && (w[i] == '"' || w[i] == '\''))
-		{
-			last_quote = w[i];
-			step += 1;
-		}
-		else if (last_quote == w[i])
-		{
-			step += 1;
-			last_quote = 0;
-		}
-		else
-			w[i - step] = w[i];
-		++i;
-	}
-	w[i - step] = 0;
-}
-
-static char	**remove_quotes(char **tab)
+static char	**fill_tab(char *command, char **tab, int word_count)
 {
 	int	i;
 
 	i = 0;
-	while (tab[i])
+	while (i < word_count)
 	{
-		remove_word_quotes(tab[i]);
+		while (ft_isspace(*command))
+			++command;
+		tab[i] = command;
+		while (*command && !ft_isspace(*command))
+		{
+			if (*command == '"' || *command == '\'')
+				command += get_quote_len(command + 1, *command) + 3;
+			else
+				while (*command && !ft_isspace(*command) && !(*command == '"' || *command == '\''))
+					++command;	
+		}
+		if (*command != 0)
+			*(command++) = 0;
 		++i;
 	}
+	tab[i] = NULL;
 	return (tab);
 }
 
-char	**parse_command(char *c)
+char	**parse_command(char *command)
 {
 	char	**res;
+	int		word_count;
 
-	res = ft_split(c, ' ');
+	word_count = count_words(command);
+	if (word_count == -1)
+		return (NULL);
+	res = malloc(sizeof(char *) * (word_count + 1));
 	if (!res)
 		return (NULL);
-	return (remove_quotes(concat_chunks(res)));
+	return (fill_tab(command, res, word_count));
 }
-
+/*
 #include <stdio.h>
 int	main(int ac, char **av)
 {
 	int	i = 0;
-	char	**tab = parse_command(av[ac -1]);
+	int	j;
+	char	**command;
 
-	while (tab[i])
+	while (i < ac)
 	{
-		printf("%s: ", tab[i]);
-		remove_word_quotes(tab[i]);
-		printf("%s\n", tab[i]);
+		j = 0;
+		command = parse_command(av[i]);
+		printf("Command: %s:", av[i]);
+		while (command[j])
+		{
+			printf("command[%d]: %s ", j, command[j]);
+			++j;
+		}
+		printf("\n");
 		++i;
 	}
-	free_split(tab);
-}
+}*/
