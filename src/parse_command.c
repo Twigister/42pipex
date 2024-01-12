@@ -27,6 +27,29 @@ static int	get_quote_len(char *command, char quote)
 	return (i - 1);
 }
 
+static int	skip_word(char *base)
+{
+	int		len;
+	char	*cmd;
+
+	cmd = base;
+	while (*cmd && !ft_isspace(*cmd))
+	{
+		if (*cmd == '"' || *cmd == '\'')
+		{
+			len = get_quote_len(cmd + 1, *cmd);
+			if (len != -1)
+				cmd += len + 3;
+			else
+				return (-1);
+		}
+		else
+			while (*cmd && !ft_isspace(*cmd) && !(*cmd == '"' || *cmd == '\''))
+				++cmd;
+	}
+	return (cmd - base);
+}
+
 static int	count_words(char *command)
 {
 	int		res;
@@ -39,20 +62,10 @@ static int	count_words(char *command)
 			++command;
 		if (*command)
 			res += 1;
-		while (*command && !ft_isspace(*command))
-		{
-			if (*command == '"' || *command == '\'')
-			{
-				len = get_quote_len(command + 1, *command);
-				if (len != -1)
-					command += len + 3;
-				else
-					return (-1);			
-			}
-			else
-				while (*command && !ft_isspace(*command) && !(*command == '"' || *command == '\''))
-					++command;
-		}
+		len = skip_word(command);
+		if (len == -1)
+			return (-1);
+		command += len;
 	}
 	return (res);
 }
@@ -72,11 +85,13 @@ static char	**fill_tab(char *command, char **tab, int word_count)
 			if (*command == '"' || *command == '\'')
 				command += get_quote_len(command + 1, *command) + 3;
 			else
-				while (*command && !ft_isspace(*command) && !(*command == '"' || *command == '\''))
-					++command;	
+				while (*command && !ft_isspace(*command) && \
+				!(*command == '"' || *command == '\''))
+					++command;
 		}
 		if (*command != 0)
 			*(command++) = 0;
+		remove_quotes(tab[i]);
 		++i;
 	}
 	tab[i] = NULL;
@@ -96,25 +111,3 @@ char	**parse_command(char *command)
 		return (NULL);
 	return (fill_tab(command, res, word_count));
 }
-/*
-#include <stdio.h>
-int	main(int ac, char **av)
-{
-	int	i = 0;
-	int	j;
-	char	**command;
-
-	while (i < ac)
-	{
-		j = 0;
-		command = parse_command(av[i]);
-		printf("Command: %s:", av[i]);
-		while (command[j])
-		{
-			printf("command[%d]: %s ", j, command[j]);
-			++j;
-		}
-		printf("\n");
-		++i;
-	}
-}*/

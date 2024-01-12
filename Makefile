@@ -25,6 +25,7 @@ SRC_COMMON 		=	ft_split			\
 					count_chars			\
 					quote_type			\
 					ft_isspace			\
+					remove_quotes		\
 
 SRC_NORMAL		=	main			\
 

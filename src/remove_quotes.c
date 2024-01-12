@@ -1,22 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quote_type.c                                       :+:      :+:    :+:   */
+/*   remove_quotes.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: arlarzil <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/08 16:20:27 by arlarzil          #+#    #+#             */
-/*   Updated: 2024/01/08 16:20:28 by arlarzil         ###   ########.fr       */
+/*   Created: 2024/01/12 17:55:36 by arlarzil          #+#    #+#             */
+/*   Updated: 2024/01/12 17:55:37 by arlarzil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char	get_first_quote_type(char *s)
+void	remove_quotes(char *s)
 {
-	while (*s)
+	int		i;
+	int		step;
+	char	quote;
+
+	quote = 0;
+	i = 0;
+	step = 0;
+	while (s[i])
 	{
-		if (*s == '"' || *s == '\'')
-			return (*s);
-		++s;
+		if (!quote && (s[i] == '\'' || s[i] == '"'))
+		{
+			quote = s[i];
+			step += 1;
+		}
+		else if (quote && s[i] == quote)
+		{
+			++step;
+			quote = 0;
+		}
+		else
+			s[i - step] = s[i];
+		++i;
 	}
-	return (0);
+	s[i - step] = 0;
 }

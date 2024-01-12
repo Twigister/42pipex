@@ -17,6 +17,8 @@
 # define FORK_FAILED "Error: The fork function failed\n"
 # define EXEC_ERROR "pipex: command not found: "
 # define PIPE_FAILED "The pipe function failed\n"
+# define READ_NOT_EXIST "pipex: no such file or directory: "
+# define NO_PERM "pipex: permission denied: "
 # include <stddef.h>
 
 char	**ft_split(char *s, char c);
@@ -34,5 +36,13 @@ char	get_first_quote_type(char *s);
 int		count_chars(char *s, char c);
 char	**parse_command(char *s);
 int		ft_isspace(char c);
+void	remove_quotes(char *s);
+
+enum	e_errors {
+	INVALID_PROGRAM_1 = 1,
+	INVALID_PROGRAM_2 = 2,
+	INVALID_INFILE = 4,
+	INVALID_OUTFILE = 8
+};
 
 #endif
