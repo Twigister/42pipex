@@ -12,7 +12,7 @@
 
 SRC_COMMON_DIR 		=	src/
 SRC_NORMAL_DIR	=	src/normal/
-SRC_BONUS_DIR	=	src/bonus/
+SRC_BONUS_DIR	=	src/bonus_3/
 
 SRC_COMMON 		=	ft_split			\
 					ft_strdup			\
@@ -30,6 +30,11 @@ SRC_COMMON 		=	ft_split			\
 SRC_NORMAL		=	main			\
 
 SRC_BONUS 		=	main			\
+					pipe_manip		\
+					exit			\
+					classic			\
+					heredoc			\
+					bonus_exec		\
 
 SRC_TO_FILENAME_COMMON		= $(addsuffix .c, $(addprefix $(SRC_COMMON_DIR), $(SRC_COMMON)))
 SRC_TO_FILENAME_NORMAL		= $(addsuffix .c, $(addprefix $(SRC_NORMAL_DIR), $(SRC_NORMAL)))

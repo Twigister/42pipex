@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include <unistd.h>
 #include "pipex.h"
 
@@ -22,21 +23,20 @@ int	test_bin_access(char *command, char **env)
 
 	ret = -1;
 	i = 0;
-	commands = ft_split(command, ' ');
+	commands = parse_command(command);
+	if (!commands)
+		return (-1);
 	paths = get_env_path_line(env);
-	while (paths && paths[i])
+	if (count_chars(commands[0], '/') && access(commands[0], X_OK) == 0)
+		ret = 0;
+	while (paths && paths[i] && ret == -1)
 	{
 		paths[i] = join_free(paths[i], commands[0]);
 		if (access(paths[i], X_OK) == 0)
-		{
 			ret = 0;
-			break ;
-		}
 		++i;
 	}
-	free_split(commands);
-	free_split(paths);
-	return (ret);
+	return (free(commands), ret);
 }
 
 int	exec(char **command, char **env)
@@ -46,6 +46,8 @@ int	exec(char **command, char **env)
 
 	i = 0;
 	paths = get_env_path_line(env);
+	if (count_chars(command[0], '/'))
+		execve(command[0], command, env);
 	while (paths && paths[i])
 	{
 		paths[i] = join_free(paths[i], command[0]);

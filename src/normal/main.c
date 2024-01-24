@@ -13,7 +13,6 @@
 #include "../pipex.h"
 
 #include <unistd.h>
-#include <stdio.h>
 
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -125,7 +124,6 @@ int	main(int ac, char **av, char **env)
 {
 	int	pipefd[2];
 	int	pid;
-	int	err;
 
 	if (ac != 5)
 	{
@@ -134,7 +132,7 @@ int	main(int ac, char **av, char **env)
 	}
 	if (pipe(pipefd))
 		return (print_err_and_exit(PIPE_FAILED));
-	err = test_files_access(av, env);
+	test_files_access(av, env);
 	pid = fork();
 	if (pid == -1)
 	{
