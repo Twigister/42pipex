@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: arlarzil <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/26 17:01:27 by arlarzil          #+#    #+#             */
+/*   Updated: 2024/01/26 17:01:28 by arlarzil         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "bonus.h"
 
 #include <unistd.h>
@@ -71,18 +83,47 @@ static void	last_run(t_pipex *data, int fd, char *cmd, char **env)
 	close(data->read_fd);
 }
 
-void	pipex_classic(t_pipex *data, int ac, char **av, char **env)
+static int	gen_tmp_file(char *keyword)
+{
+	char	filename[17];
+	int		j;
+	char	fds[2];
+
+	int (i) = 0;
+	while (i < 16)
+	{
+		j = '0';
+		while (j < '9')
+		{
+			filename[i] = j;
+			filename[i + 1] = 0;
+			fds[0] = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 00644);
+			if (fds[0] != -1)
+			{
+				fds[1] = open(filename, O_RDONLY);
+				unlink(filename);
+				read_till_keyword(fds[0], keyword);
+				return (fds[1]);
+			}
+			++j;
+		}
+		++i;
+	}
+	return (-1);
+}
+
+void	pipex_heredoc(t_pipex *data, int ac, char **av, char **env)
 {
 	int	fd;
 	int	i;
 
-	i = 3;
-	if (ac < 5)
+	i = 4;
+	if (ac < 6)
 		clean_exit(USAGE, data);
-	fd = open(av[1], O_RDONLY);
+	fd = gen_tmp_file(av[2]);
 	if (fd == -1)
-		clean_exit(INFILE_ERR, data);
-	run_first(data, fd, av[2], env);
+		clean_exit(TEMP_FILE_ERR, data);
+	run_first(data, fd, av[3], env);
 	init_pipes(data, fd);
 	while (i < ac - 2)
 	{
@@ -92,6 +133,6 @@ void	pipex_classic(t_pipex *data, int ac, char **av, char **env)
 		swap_pipe(data);
 		++i;
 	}
-	fd = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 00644);
+	fd = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND, 00644);
 	last_run(data, fd, av[ac - 2], env);
 }
