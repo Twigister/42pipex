@@ -17,10 +17,11 @@ enum e_errcodes {
 	INTER_DUP,
 	OUT_FORK,
 	OUT_DUP_1,
-	OUT_DUP_2
+	OUT_DUP_2,
+	TEMP_FILE_ERR,
 };
 
-# define USAGE_MSG_BONUS "Usage: ./pipex (here_doc) infile cmd1 [...] cmdn outfile\n"
+# define USAGE_MSG_BONUS "Usage: ./pipex (here_doc) infile/limiter cmd1 [...] cmdn outfile\n"
 
 typedef struct s_pipex {
 	int		prog_count;
