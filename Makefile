@@ -6,13 +6,13 @@
 #    By: arlarzil <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/06 20:28:41 by arlarzil          #+#    #+#              #
-#    Updated: 2023/12/12 21:53:44 by arlarzil         ###   ########.fr        #
+#    Updated: 2024/01/29 15:39:20 by arlarzil         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC_COMMON_DIR 		=	src/
 SRC_NORMAL_DIR	=	src/normal/
-SRC_BONUS_DIR	=	src/bonus_3/
+SRC_BONUS_DIR	=	src/bonus/
 
 SRC_COMMON 		=	ft_split			\
 					ft_strdup			\
