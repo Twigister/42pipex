@@ -103,6 +103,8 @@ char	**parse_command(char *command)
 	char	**res;
 	int		word_count;
 
+	if (command == NULL)
+		return (NULL);
 	word_count = count_words(command);
 	if (word_count == -1)
 		return (NULL);

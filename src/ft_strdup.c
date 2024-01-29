@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include "pipex.h"
 
 char	*ft_strncpy(char *dest, const char *src, size_t n)
 {
@@ -48,5 +49,24 @@ char	*ft_strndup_e(const char *s, size_t n)
 		return (NULL);
 	ft_strncpy(res, s, n);
 	res[n] = 0;
+	return (res);
+}
+
+char	*ft_strdup(const char *s)
+{
+	char	*res;
+	char	*ptr;
+
+	res = malloc(ft_strlen(s) + 1);
+	if (!res)
+		return (NULL);
+	ptr = res;
+	while (*s)
+	{
+		*ptr = *s;
+		++ptr;
+		++s;
+	}
+	*ptr = 0;
 	return (res);
 }

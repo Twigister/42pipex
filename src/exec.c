@@ -23,7 +23,7 @@ int	test_bin_access(char *command, char **env)
 
 	ret = -1;
 	i = 0;
-	commands = parse_command(command);
+	commands = parse_command(ft_strdup(command));
 	if (!commands)
 		return (-1);
 	paths = get_env_path_line(env);
@@ -36,7 +36,7 @@ int	test_bin_access(char *command, char **env)
 			ret = 0;
 		++i;
 	}
-	return (free(commands), ret);
+	return (free(*commands), free(commands), free_split(paths), ret);
 }
 
 int	exec(char **command, char **env)
