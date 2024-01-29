@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_normal.c                                      :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: arlarzil <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 14:22:43 by arlarzil          #+#    #+#             */
-/*   Updated: 2024/01/08 14:22:43 by arlarzil         ###   ########.fr       */
+/*   Updated: 2024/01/29 15:02:23 by arlarzil         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	main_iac(int pipefd[2], char **av, char **env)
 	if (pid == -1)
 	{
 		write(2, FORK_FAILED, ft_strlen(FORK_FAILED));
-		return (-1);
+		exit(-1);
 	}
 	if (pid == 0)
 		child(av, pipefd, env);
@@ -91,13 +91,15 @@ void	main_iac(int pipefd[2], char **av, char **env)
 	if (pid == -1)
 	{
 		write(2, FORK_FAILED, ft_strlen(FORK_FAILED));
-		return (-1);
+		wait(0);
+		exit(-1);
 	}
 	if (pid == 0)
 		parent(av, pipefd, env);
 	close(pipefd[0]);
 	wait(0);
 	wait(0);
+	exit(0);
 }
 
 int	main(int ac, char **av, char **env)
