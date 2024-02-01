@@ -26,7 +26,7 @@ static int	handle_fork(void)
 	pid = fork();
 	if (pid == -1)
 	{
-		write(2, FORK_FAILED, ft_strlen(FORK_FAILED));
+		perror("pipex");
 		exit(1);
 	}
 	return (pid);
@@ -52,7 +52,6 @@ static void	cmd1(t_pipex *data, const char *filename, char *cmd, char **env)
 		dup2(data->pipefd[1], 1);
 		close(data->pipefd[0]);
 		close(data->pipefd[1]);
-		close(0);
 		close(data->fd_in);
 		exec(command, env);
 	}
@@ -78,7 +77,6 @@ static void	cmd2(t_pipex *data, const char *file, char *cmd, char **env)
 	{
 		dup2(data->pipefd[0], 0);
 		dup2(data->fd_out, 1);
-		close(data->pipefd[0]);
 		close(data->pipefd[1]);
 		close(data->fd_out);
 		exec(command, env);
@@ -107,17 +105,14 @@ int	main(int ac, char **av, char **env)
 	t_pipex	data;
 
 	init(&data, ac);
-	cmd1(&data, av[1], av[2], env);
-	if (data.fd_in != -1)
-		close(data.fd_in);
-	close(data.pipefd[1]);
 	cmd2(&data, av[4], av[3], env);
-	close(data.pipefd[0]);
 	if (data.fd_out != -1)
 		close(data.fd_out);
-	close(0);
-	close(1);
-	close(2);
+	close(data.pipefd[0]);
+	cmd1(&data, av[1], av[2], env);
+	close(data.pipefd[1]);
+	if (data.fd_in != -1)
+		close(data.fd_in);
 	while (data.process--)
 		wait(0);
 }
