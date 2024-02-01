@@ -107,11 +107,11 @@ int	main(int ac, char **av, char **env)
 	t_pipex	data;
 
 	init(&data, ac);
-	cmd2(&data, av[4], av[3], env);
+	cmd1(&data, av[1], av[2], env);
 	if (data.fd_in != -1)
 		close(data.fd_in);
 	close(data.pipefd[1]);
-	cmd1(&data, av[1], av[2], env);
+	cmd2(&data, av[4], av[3], env);
 	close(data.pipefd[0]);
 	if (data.fd_out != -1)
 		close(data.fd_out);
