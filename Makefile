@@ -29,7 +29,6 @@ SRC_COMMON 		=	ft_split			\
 
 SRC_NORMAL		=	main				\
 					print_err			\
-					test_file_access	\
 
 SRC_BONUS 		=	main				\
 					pipe_manip			\

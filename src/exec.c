@@ -44,6 +44,8 @@ int	exec(char **command, char **env)
 	int		i;
 	char	**paths;
 
+	if (!command)
+		exit(1);
 	i = 0;
 	paths = get_env_path_line(env);
 	if (count_chars(command[0], '/'))
@@ -56,5 +58,7 @@ int	exec(char **command, char **env)
 		++i;
 	}
 	free_split(paths);
-	return (-1);
+	write(2, command[0], ft_strlen(command[0]));
+	write(2, ": command not found\n", ft_strlen(": command not found\n"));
+	exit (1);
 }
