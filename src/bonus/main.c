@@ -50,6 +50,8 @@ int	main(int ac, char **av, char **env)
 		pipex_heredoc(&data, ac, av, env);
 	else
 		pipex_classic(&data, ac, av, env);
+	if (data.read_fd != -1)
+		close(data.read_fd);
 	while (data.prog_count--)
 		wait(0);
 }
