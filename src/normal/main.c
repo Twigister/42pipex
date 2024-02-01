@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: arlarzil <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/02/01 14:26:45 by arlarzil          #+#    #+#             */
+/*   Updated: 2024/02/01 14:26:48 by arlarzil         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "normal.h"
 #include "../pipex.h"
 #include <unistd.h>
@@ -6,6 +18,19 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+static int	handle_fork(void)
+{
+	int	pid;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		write(2, FORK_FAILED, ft_strlen(FORK_FAILED));
+		exit(1);
+	}
+	return (pid);
+}
 
 static void	cmd1(t_pipex *data, const char *filename, char *cmd, char **env)
 {
@@ -20,13 +45,8 @@ static void	cmd1(t_pipex *data, const char *filename, char *cmd, char **env)
 		return ;
 	}
 	command = parse_command(cmd);
-	pid = fork();
-	if (pid == -1)
-	{
-		write(2, FORK_FAILED, ft_strlen(FORK_FAILED));
-		exit(1);
-	}
-	else if (pid == 0)
+	pid = handle_fork();
+	if (pid == 0)
 	{
 		dup2(data->fd_in, 0);
 		dup2(data->pipefd[1], 1);
@@ -53,13 +73,8 @@ static void	cmd2(t_pipex *data, const char *file, char *cmd, char **env)
 		return ;
 	}
 	command = parse_command(cmd);
-	pid = fork();
-	if (pid == -1)
-	{
-		write(2, FORK_FAILED, ft_strlen(FORK_FAILED));
-		exit(1);
-	}
-	else if (pid == 0)
+	pid = handle_fork();
+	if (pid == 0)
 	{
 		dup2(data->pipefd[0], 0);
 		dup2(data->fd_out, 1);
@@ -72,26 +87,31 @@ static void	cmd2(t_pipex *data, const char *file, char *cmd, char **env)
 	++data->process;
 }
 
+static void	init(t_pipex *data, int ac)
+{
+	if (ac != 5)
+	{
+		write(2, USAGE_MSG, ft_strlen(USAGE_MSG));
+		exit(1);
+	}
+	if (pipe(data->pipefd))
+	{
+		write(2, PIPE_FAILED, ft_strlen(PIPE_FAILED));
+		exit(1);
+	}
+	data->process = 0;
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_pipex	data;
 
-	data.process = 0;
-	if (ac != 5)
-	{
-		write(2, USAGE_MSG, ft_strlen(USAGE_MSG));
-		return (1);
-	}
-	if (pipe(data.pipefd))
-	{
-		write(2, PIPE_FAILED, ft_strlen(PIPE_FAILED));
-		return (1);
-	}
-	cmd1(&data, av[1], av[2], env);
+	init(&data, ac);
+	cmd2(&data, av[4], av[3], env);
 	if (data.fd_in != -1)
 		close(data.fd_in);
 	close(data.pipefd[1]);
-	cmd2(&data, av[4], av[3], env);
+	cmd1(&data, av[1], av[2], env);
 	close(data.pipefd[0]);
 	if (data.fd_out != -1)
 		close(data.fd_out);
