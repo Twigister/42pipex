@@ -32,10 +32,10 @@ static void	init_struct(t_pipex *data, const char *av1)
 	if (av1)
 		data->heredoc = !ft_strcmp(av1, "here_doc");
 	else
-		clean_exit(USAGE, data);
+		clean_exit(USAGE, data, "");
 	data->prog_count = 0;
 	if (pipe(data->pipefd) == -1)
-		clean_exit(MAIN_PIPE_FAILED, data);
+		clean_exit(MAIN_PIPE_FAILED, data, "");
 }
 
 int	main(int ac, char **av, char **env)
