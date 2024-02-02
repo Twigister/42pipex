@@ -38,6 +38,7 @@ SRC_BONUS 		=	main				\
 					bonus_exec			\
 					read_till_keyword	\
 					get_next_line		\
+					print_file_error	\
 
 SRC_TO_FILENAME_COMMON		= $(addsuffix .c, $(addprefix $(SRC_COMMON_DIR), $(SRC_COMMON)))
 SRC_TO_FILENAME_NORMAL		= $(addsuffix .c, $(addprefix $(SRC_NORMAL_DIR), $(SRC_NORMAL)))

@@ -45,7 +45,8 @@ typedef struct s_pipex {
 	int		heredoc;
 }	t_pipex;
 
-void	clean_exit(int err, t_pipex *data, const char *string);
+void	clean_exit(int err, t_pipex *data);
+void	print_file_error(const char *filename);
 
 void	init_pipes(t_pipex *data, int fd);
 void	swap_pipe(t_pipex *data);

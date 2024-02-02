@@ -23,16 +23,16 @@ static void	run_first(t_pipex *data, int fd, char *cmd, char **env)
 	data->prog_count++;
 	pid = fork();
 	if (pid == -1)
-		clean_exit(FORK_FAIL_FIRST, data, NULL);
+		clean_exit(FORK_FAIL_FIRST, data);
 	if (pid == 0)
 	{
 		close(data->pipefd[0]);
 		if (fd == -1)
-			clean_exit(INVALID_FD_IN, data, "temp file: in");
+			clean_exit(INVALID_FD_IN, data);
 		if (dup2(data->pipefd[1], 1) == -1)
-			clean_exit(PIPE_DUP_FAIL_IN, data, NULL);
+			clean_exit(PIPE_DUP_FAIL_IN, data);
 		if (dup2(fd, 0) == -1)
-			clean_exit(PIPE_DUP_FAIL_IN, data, NULL);
+			clean_exit(PIPE_DUP_FAIL_IN, data);
 		close(fd);
 		close(data->pipefd[1]);
 		bonus_exec(cmd, data, env);
@@ -46,14 +46,14 @@ static void	inter_run(t_pipex *data, char *cmd, char **env)
 	data->prog_count++;
 	pid = fork();
 	if (pid == -1)
-		clean_exit(INTER_FORK, data, NULL);
+		clean_exit(INTER_FORK, data);
 	if (pid == 0)
 	{
 		close(data->pipefd[0]);
 		if (dup2(data->pipefd[1], 1) == -1)
-			clean_exit(INTER_DUP, data, NULL);
+			clean_exit(INTER_DUP, data);
 		if (dup2(data->read_fd, 0) == -1)
-			clean_exit(INTER_DUP, data, NULL);
+			clean_exit(INTER_DUP, data);
 		close(data->read_fd);
 		close(data->pipefd[1]);
 		bonus_exec(cmd, data, env);
@@ -67,15 +67,15 @@ static void	last_run(t_pipex *data, int fd, char *cmd, char **env)
 	data->prog_count++;
 	pid = fork();
 	if (pid == -1)
-		clean_exit(OUT_FORK, data, NULL);
+		clean_exit(OUT_FORK, data);
 	if (pid == 0)
 	{
 		if (fd == -1)
-			clean_exit(OUTFILE_ERR, data, "temp file: out");
+			clean_exit(OUTFILE_ERR, data);
 		else if (dup2(fd, 1) == -1)
-			clean_exit(OUT_DUP_1, data, NULL);
+			clean_exit(OUT_DUP_1, data);
 		else if (dup2(data->read_fd, 0) == -1)
-			clean_exit(OUT_DUP_2, data, NULL);
+			clean_exit(OUT_DUP_2, data);
 		close(fd);
 		close(data->read_fd);
 		bonus_exec(cmd, data, env);
@@ -119,20 +119,22 @@ void	pipex_heredoc(t_pipex *data, int ac, char **av, char **env)
 
 	i = 4;
 	if (ac < 6)
-		clean_exit(USAGE, data, NULL);
+		clean_exit(USAGE, data);
 	fd = gen_tmp_file(av[2]);
 	if (fd == -1)
-		clean_exit(TEMP_FILE_ERR, data, NULL);
+		print_file_error("heredoc temp file");
 	run_first(data, fd, av[3], env);
 	init_pipes(data, fd);
 	while (i < ac - 2)
 	{
 		if (pipe(data->pipefd) == -1)
-			clean_exit(INTER_PIPE_FAIL, data, NULL);
+			clean_exit(INTER_PIPE_FAIL, data);
 		inter_run(data, av[i], env);
 		swap_pipe(data);
 		++i;
 	}
 	fd = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND, 00644);
+	if (fd == -1)
+		print_file_error(av[ac - 1]);
 	last_run(data, fd, av[ac - 2], env);
 }

@@ -20,7 +20,7 @@ void	bonus_exec(char *cmd, t_pipex *data, char **env)
 
 	command = parse_command(cmd);
 	if (!command)
-		clean_exit(PARSE_FAIL, data, cmd);
+		clean_exit(PARSE_FAIL, data);
 	exec(command, env);
 	free(command);
 	exit(0);

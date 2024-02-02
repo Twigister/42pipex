@@ -17,20 +17,12 @@
 #include "bonus.h"
 #include "../pipex.h"
 
-void	clean_exit(int err, t_pipex *data, const char *string)
+void	clean_exit(int err, t_pipex *data)
 {
 	(void)data;
 	if (err == USAGE)
 		write(2, USAGE_MSG_BONUS, ft_strlen(USAGE_MSG_BONUS));
 	else
-	{
-		if (string)
-		{
-			write(2, "pipex: ", ft_strlen("pipex: "));
-			perror(string);
-		}
-		else
-			perror("pipex");
-	}
+		perror("pipex");
 	exit(err);
 }
