@@ -46,6 +46,11 @@ int	exec(char **command, char **env)
 
 	if (!command)
 		exit(1);
+	if (!command[0])
+	{
+		free(command);
+		exit(0);
+	}
 	i = 0;
 	paths = get_env_path_line(env);
 	if (count_chars(command[0], '/'))
