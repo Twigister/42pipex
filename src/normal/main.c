@@ -37,7 +37,6 @@ static void	cmd1(t_pipex *data, const char *filename, char *cmd, char **env)
 	char	**command;
 	int		pid;
 
-	command = parse_command(cmd);
 	data->fd_in = open(filename, O_RDONLY);
 	if (data->fd_in == -1)
 	{
@@ -45,6 +44,7 @@ static void	cmd1(t_pipex *data, const char *filename, char *cmd, char **env)
 		perror(filename);
 		return ;
 	}
+	command = parse_command(cmd);
 	pid = handle_fork();
 	if (pid == 0)
 	{
