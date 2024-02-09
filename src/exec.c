@@ -39,6 +39,13 @@ int	test_bin_access(char *command, char **env)
 	return (free(*commands), free(commands), free_split(paths), ret);
 }
 
+static void	no_command(char **command)
+{
+	free(command);
+	write(2, "pipex: no command\n", 19);
+	exit(0);
+}
+
 int	exec(char **command, char **env)
 {
 	int		i;
@@ -47,10 +54,7 @@ int	exec(char **command, char **env)
 	if (!command)
 		exit(1);
 	if (!command[0])
-	{
-		free(command);
-		exit(0);
-	}
+		no_command(command);
 	i = 0;
 	paths = get_env_path_line(env);
 	if (count_chars(command[0], '/'))
