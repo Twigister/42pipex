@@ -118,6 +118,8 @@ int	main(int ac, char **av, char **env)
 		close(data.fd_out);
 	while (data.process--)
 		waitpid(-1, &ret, 0);
+	if (data.fd_out == -1)
+		return (1);
 	if (!data.prog2exists)
 		return (127);
 	ret = WEXITSTATUS(ret);
