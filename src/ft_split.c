@@ -50,6 +50,8 @@ char	**free_split(char **p)
 {
 	int	i;
 
+	if (!p)
+		return (NULL);
 	i = 0;
 	while (p[i])
 	{

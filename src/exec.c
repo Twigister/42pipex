@@ -14,7 +14,7 @@
 #include <unistd.h>
 #include "pipex.h"
 
-int	test_bin_access(char *command, char **env)
+int	test_bin_access(const char *command, char **env)
 {
 	char	**commands;
 	int		ret;
