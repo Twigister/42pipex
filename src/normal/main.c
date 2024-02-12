@@ -120,6 +120,8 @@ int	main(int ac, char **av, char **env)
 		return (1);
 	while (data.process--)
 		waitpid(-1, &ret, 0);
+	if (!data.prog2exists)
+		return (127);
 	ret = WEXITSTATUS(ret);
 	return (ret);
 }
