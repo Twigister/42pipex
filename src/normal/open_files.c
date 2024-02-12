@@ -47,14 +47,14 @@ static void	write_prog_name(const char *s)
 void	test_bins(t_pipex *data, const char *c1, const char *c2, char **env)
 {
 	data->prog1exists = !test_bin_access(c1, env);
-	if (!data->prog1exists && data->fd_in)
+	if (!data->prog1exists && data->fd_in != -1)
 	{
 		write(2, "pipex: ", 8);
 		write_prog_name(c1);
 		write(2, ": command not found\n", 21);
 	}
 	data->prog2exists = !test_bin_access(c2, env);
-	if (!data->prog2exists && data->fd_out)
+	if (!data->prog2exists && data->fd_out != -1)
 	{
 		write(2, "pipex: ", 8);
 		write_prog_name(c2);
