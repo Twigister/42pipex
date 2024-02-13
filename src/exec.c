@@ -17,26 +17,26 @@
 int	test_bin_access(const char *command, char **env)
 {
 	char	**commands;
-	int		ret;
+	char	*cpy;
 	char	**paths;
 	int		i;
 
-	ret = -1;
+	cpy = ft_strdup(command);
 	i = 0;
-	commands = parse_command(ft_strdup(command));
+	commands = parse_command(cpy);
 	if (!commands)
 		return (-1);
 	paths = get_env_path_line(env);
 	if (count_chars(commands[0], '/') && access(commands[0], X_OK) == 0)
-		ret = 0;
-	while (paths && paths[i] && ret == -1)
+		return (free(cpy), free(commands), free_split(paths), 0);
+	while (paths && paths[i])
 	{
 		paths[i] = join_free(paths[i], commands[0]);
 		if (access(paths[i], X_OK) == 0)
-			ret = 0;
+			return (free(cpy), free(commands), free_split(paths), 0);
 		++i;
 	}
-	return (free(*commands), free(commands), free_split(paths), ret);
+	return (free(cpy), free(commands), free_split(paths), -1);
 }
 
 static void	no_command(char **command)
