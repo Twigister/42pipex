@@ -39,8 +39,8 @@ static void	write_prog_name(const char *s)
 	int	len;
 
 	len = 0;
-	while (*s && *s > 32)
-		++len;
+	while (*s && *s <= 32)
+		++s;
 	while (s[len] > 32)
 		++len;
 	write(2, s, len);
