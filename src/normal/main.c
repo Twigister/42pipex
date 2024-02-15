@@ -63,18 +63,13 @@ static void	cmd2(t_pipex *data, char *cmd, char **env)
 	char	**command;
 	int		pid;
 
-	if (data->fd_out == -1)
-		return ;
-	if (!data->prog2exists)
+	if (data->fd_out == -1 || !data->prog2exists)
 		return ;
 	command = parse_command(cmd);
 	pid = handle_fork();
 	if (pid == 0)
 	{
-		if (data->prog1exists)
-			dup2(data->pipefd[0], 0);
-		else
-			close(0);
+		dup2(data->pipefd[0], 0);
 		dup2(data->fd_out, 1);
 		close(data->pipefd[1]);
 		close(data->fd_out);
